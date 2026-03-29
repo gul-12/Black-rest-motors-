@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Black Rest Motors</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #000;
+      color: white;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      background: black;
+      border-bottom: 2px solid gold;
+    }
+
+    h1, h2 { color: gold; }
+
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+
+    .hero {
+      height: 80vh;
+      background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7') center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 60px;
+    }
+
+    .hero h1 {
+      font-size: 60px;
+    }
+
+    .btn {
+      background: gold;
+      padding: 15px 25px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .section {
+      padding: 50px;
+    }
+
+    .filters input {
+      padding: 10px;
+      margin: 5px;
+    }
+
+    .cars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .car {
+      background: #111;
+      width: 280px;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .car:hover {
+      transform: scale(1.05);
+    }
+
+    .car img {
+      width: 100%;
+    }
+
+    .car-info {
+      padding: 15px;
+    }
+
+    .details {
+      display: none;
+      padding: 50px;
+    }
+
+    .gallery img {
+      width: 200px;
+      margin: 10px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<header>
+  <h2>BLACK REST MOTORS</h2>
+  <nav>
+    <a href="#" onclick="showHome()">Home</a>
+    <a href="#" onclick="showInventory()">Inventory</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero" id="home">
+  <h1>Drive Luxury</h1>
+  <p>Black & Gold Premium Vehicles</p>
+  <button class="btn" onclick="showInventory()">Browse Cars</button>
+</div>
+
+<!-- INVENTORY -->
+<div class="section" id="inventory" style="display:none;">
+  <h2>Inventory</h2>
+
+  <div class="filters">
+    <input id="search" placeholder="Search..." onkeyup="filterCars()">
+    <input id="price" placeholder="Max Price" onkeyup="filterCars()">
+  </div>
+
+  <div class="cars" id="carList"></div>
+</div>
+
+<!-- DETAILS -->
+<div class="details" id="details">
+  <button class="btn" onclick="showInventory()">⬅ Back</button>
+  <h1 id="carName"></h1>
+  <div class="gallery" id="gallery"></div>
+  <p id="carInfo"></p>
+</div>
+
+<script>
+let cars = [
+  {
+    name:"Audi R8",
+    price:95000,
+    year:2020,
+    mileage:"12,000 miles",
+    images:["audi1.jpg","audi2.jpg"]
+  },
+  {
+    name:"BMW M4",
+    price:45000,
+    year:2019,
+    mileage:"25,000 miles",
+    images:["bmw1.jpg","bmw2.jpg"]
+  }
+];
+
+function showHome() {
+  document.getElementById("home").style.display = "flex";
+  document.getElementById("inventory").style.display = "none";
+  document.getElementById("details").style.display = "none";
+}
+
+function showInventory() {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("inventory").style.display = "block";
+  document.getElementById("details").style.display = "none";
+}
+
+function showDetails(index) {
+  const car = cars[index];
+
+  document.getElementById("carName").innerText = car.name;
+  document.getElementById("carInfo").innerText =
+    "£" + car.price + " | " + car.year + " | " + car.mileage;
+
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+
+  car.images.forEach(img => {
+    gallery.innerHTML += `<img src="${img}">`;
+  });
+
+  document.getElementById("inventory").style.display = "none";
+  document.getElementById("details").style.display = "block";
+}
+
+function displayCars(list) {
+  const carList = document.getElementById("carList");
+  carList.innerHTML = "";
+
+  list.forEach((car, index) => {
+    carList.innerHTML += `
+      <div class="car" onclick="showDetails(${index})">
+        <img src="${car.images[0]}">
+        <div class="car-info">
+          <h3>${car.name}</h3>
+          <p>£${car.price}</p>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function filterCars() {
+  const search = document.getElementById("search").value.toLowerCase();
+  const price = document.getElementById("price").value;
+
+  const filtered = cars.filter(car =>
+    car.name.toLowerCase().includes(search) &&
+    (!price || car.price <= price)
+  );
+
+  displayCars(filtered);
+}
+
+displayCars(cars);
+</script>
+
+</body>
+</html>
